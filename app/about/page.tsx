@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -66,7 +67,7 @@ export default function AboutPage() {
             >
               ral
             </h2>
-            <p
+            <div
               style={{
                 color: 'var(--color-text-muted)',
                 lineHeight: 1.8,
@@ -74,11 +75,53 @@ export default function AboutPage() {
                 maxWidth: '600px',
               }}
             >
-              趣味で天体観測・天体撮影を楽しんでいます。
-              このサイトでは、撮影した天体写真や観測記録、活動の歴史を公開しています。
-              （詳細は随時更新予定）
+              <p style={{ marginBottom: '1em' }}>
+                私、HNをらると申します。
+                静岡県内で内科開業医として地域医療をこなしながら、色々な趣味に勤しんでいます。
+              </p>
+              <p style={{ marginBottom: '1em' }}>
+                大学時代は水泳、社会人になってからランニングを趣味としてきました。そして、2012年にトレイルランニングとの衝撃の出会いがあり、以降は山を走ることを趣味の第一としてきました。年に数回の大会出場で、最長100kmのレースも完走。日々のトレーニングも、週2回の20kmランを課して鍛えてきました。
+              </p>
+              <p style={{ marginBottom: '1em' }}>
+                しかし、徐々に歳を重ね、2019年には大きな怪我で膝を手術、更にコロナ業務による疲労...。山を駆け回るだけで心を満たし切れなくなってきたこともあり、これから歳をとっても続けられるなにか別の趣味を...と、色々思い悩んだのが2022年春。そして、そこで選択したのが、子供の頃からの夢であった天体観測でした。
+              </p>
+              <p>
+                いずれは、山を走ることができなくなるときが来るでしょう。その時は、山で星を見ることを第一の楽しみとしていきたいと考えています。
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {/* 画像ギャラリー1 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+          <Image src="/images/about/landscape.jpg" alt="山の風景" width={500} height={300} style={{ borderRadius: '12px', objectFit: 'cover', width: '100%', height: 'auto', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)' }} />
+          <Image src="/images/about/telescope.jpg" alt="夜空と望遠鏡" width={500} height={300} style={{ borderRadius: '12px', objectFit: 'cover', width: '100%', height: 'auto', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)' }} />
+        </div>
+
+        {/* HNの由来 */}
+        <div
+          className="glass-card"
+          style={{
+            padding: 'clamp(2rem, 5vw, 3rem)',
+            marginBottom: '2rem',
+          }}
+        >
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--color-star-white)', marginBottom: '1rem' }}>
+            HN「らる」の由来
+          </h3>
+          <div style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, maxWidth: '600px' }}>
+            <p>
+              昔ドはまりしたネットゲーム"マビノギ”の自キャラの名前(らるてぃあ) からとったものです。ゲーム内の仲間やギルメンからは、らるさんと呼ばれてました。
+              <br />
+              なぜこの名前にしたかは...覚えてませんw
             </p>
           </div>
+        </div>
+
+        {/* 画像ギャラリー2 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+           <Image src="/images/about/game.jpg" alt="ゲームのスクリーンショット" width={500} height={300} style={{ borderRadius: '12px', objectFit: 'cover', width: '100%', height: 'auto', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)' }} />
+           <Image src="/images/about/character.jpg" alt="キャラクターのイラスト" width={500} height={300} style={{ borderRadius: '12px', objectFit: 'cover', width: '100%', height: 'auto', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)' }} />
         </div>
 
         {/* スペック一覧 */}
