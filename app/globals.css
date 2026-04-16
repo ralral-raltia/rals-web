@@ -1,26 +1,183 @@
 @import "tailwindcss";
 
+/* ============================================
+   Design System — ral's website
+   天体写真サイト用ダークテーマ
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Color Tokens --- */
+  --color-space-black:  #050810;
+  --color-space-deep:   #0b1120;
+  --color-space-mid:    #111827;
+  --color-space-card:   rgba(17, 24, 39, 0.6);
+
+  --color-star-blue:    #6ea8fe;
+  --color-star-purple:  #a78bfa;
+  --color-star-cyan:    #67e8f9;
+  --color-star-white:   #f0f4ff;
+
+  --color-text-primary: #e2e8f0;
+  --color-text-muted:   #94a3b8;
+  --color-text-faint:   #475569;
+
+  --color-border:       rgba(110, 168, 254, 0.15);
+  --color-border-glow:  rgba(110, 168, 254, 0.4);
+
+  /* --- Gradient Tokens --- */
+  --gradient-hero: linear-gradient(
+    to bottom,
+    rgba(5, 8, 16, 0) 0%,
+    rgba(5, 8, 16, 0.5) 60%,
+    rgba(5, 8, 16, 0.95) 100%
+  );
+  --gradient-card: linear-gradient(
+    135deg,
+    rgba(110, 168, 254, 0.07) 0%,
+    rgba(167, 139, 250, 0.04) 100%
+  );
+  --gradient-accent: linear-gradient(90deg, #6ea8fe, #a78bfa);
+  --gradient-text:   linear-gradient(90deg, #c7d9ff, #a78bfa);
+
+  /* --- Spacing & Shape --- */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  32px;
+
+  /* --- Typography --- */
+  --font-display: var(--font-outfit, 'Outfit', sans-serif);
+  --font-body:    var(--font-noto, 'Noto Sans JP', sans-serif);
+
+  /* --- Transitions --- */
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================
+   Base Reset & Body
+   ============================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-space-black);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* ============================================
+   Star Background Animation
+   ============================================ */
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.3); }
+}
+
+@keyframes drift {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(-4px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(110, 168, 254, 0.3); }
+  50%       { box-shadow: 0 0 28px rgba(110, 168, 254, 0.6); }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.gradient-text {
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+.glass-card {
+  background: var(--gradient-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.glass-card:hover {
+  border-color: var(--color-border-glow);
+  box-shadow: 0 8px 32px rgba(110, 168, 254, 0.12);
+  transform: translateY(-3px);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.4rem;
+}
+
+.section-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--gradient-accent);
+  border-radius: 2px;
+  margin-bottom: 2.5rem;
+}
+
+/* Responsive container */
+.container-site {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
