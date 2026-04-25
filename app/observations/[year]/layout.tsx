@@ -1,21 +1,10 @@
 // app/observations/[year]/layout.tsx
 import Link from 'next/link';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { formatObservationDate, getObservationDates, getObservationYears } from '../_lib/observation-data';
 
-async function getObservationDates(year: string) {
-  try {
-    const yearPath = path.join(process.cwd(), 'app', 'observations', year);
-    const entries = await fs.readdir(yearPath, { withFileTypes: true });
-    const dates = entries
-      .filter(entry => entry.isDirectory())
-      .map(entry => entry.name)
-      .sort((a, b) => b.localeCompare(a)); // 日付の降順にソート
-    return dates;
-  } catch (error) {
-    console.error(`Error reading observation dates for year ${year}:`, error);
-    return [];
-  }
+export async function generateStaticParams() {
+  const years = await getObservationYears();
+  return years.map(({ year }) => ({ year }));
 }
 
 export default async function ObservationYearLayout({
@@ -23,15 +12,16 @@ export default async function ObservationYearLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { year: string };
+  params: Promise<{ year: string }>;
 }) {
-  const dates = await getObservationDates(params.year);
+  const { year } = await params;
+  const dates = await getObservationDates(year);
 
   return (
     <div style={{ paddingTop: '100px', paddingBottom: '5rem', position: 'relative', zIndex: 1 }}>
       <div className="container-site">
         <header style={{ marginBottom: '3rem' }}>
-          <h1 className="section-title">{params.year}年</h1>
+          <h1 className="section-title">{year}年</h1>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>観測記録</p>
           <div className="section-divider" style={{ marginTop: '1rem' }} />
         </header>
@@ -45,19 +35,17 @@ export default async function ObservationYearLayout({
                 {dates.map((date) => (
                   <li key={date}>
                     <Link
-                      href={`/observations/${params.year}/${date}`}
+                      href={`/observations/${year}/${date}`}
                       style={{
                         display: 'block',
                         padding: '0.75rem 1rem',
                         borderRadius: '8px',
                         textDecoration: 'none',
                         color: 'var(--color-text-muted)',
-                        transition: 'background-color 0.2s, color 0.2s'
+                        transition: 'background-color 0.2s, color 0.2s',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      {`${date.slice(0, 2)}/${date.slice(2, 4)}/${date.slice(4, 6)}`}
+                      {formatObservationDate(year, date)}
                     </Link>
                   </li>
                 ))}

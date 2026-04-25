@@ -1,0 +1,3 @@
+interface:
+  display_name: "Observation Record Pages"
+  short_description: "Migrate observations to Markdown + upload data"

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import HeroMountainParallax from '@/components/HeroMountainParallax';
 
 export const metadata: Metadata = {
   title: "ral's website",
@@ -84,11 +85,22 @@ export default function HomePage() {
           }}
         />
 
+        {/* 前景の山シルエット */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 2,
+          }}
+        >
+          <HeroMountainParallax />
+        </div>
+
         {/* Hero テキスト */}
         <div
           style={{
             position: 'relative',
-            zIndex: 2,
+            zIndex: 3,
             textAlign: 'center',
             padding: '0 1.5rem',
           }}
