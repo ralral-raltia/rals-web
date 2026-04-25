@@ -10,9 +10,16 @@ tags:
 
 ## 日記
 
+image: diary-setup.jpg
+imageAlign: right
+
 久しぶりに透明度の高い夜空だった。準備に時間がかかったが、風が弱く追尾は安定していた。
 
-![機材セットアップ](diary-setup.jpg)
+align: center
+
+ここだけ中央寄せしたい一文を書く。
+
+align: left
 
 雲が流れる時間帯は待機し、雲間を狙って撮影を継続した。
 
@@ -38,7 +45,12 @@ tags:
 
 #### 所感
 
+image: m42-final.jpg
+imageAlign: right
+
 中心部の飽和を抑えきれなかった。次回は短時間露光を追加してHDR合成を試す。
+
+clear: both
 
 ### IC434
 

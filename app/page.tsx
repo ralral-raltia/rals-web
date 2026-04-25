@@ -19,8 +19,8 @@ const navCards = [
   {
     href:  '/gallery',
     icon:  '🔭',
-    title: 'Gallery',
-    desc:  '天体写真',
+    title: 'Activities',
+    desc:  '天体活動',
   },
   {
     href:  '/observations',

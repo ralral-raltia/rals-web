@@ -1,11 +1,11 @@
 ---
 name: observation-record-pages
-description: Build and migrate the observations pages in this project from hardcoded data to Markdown-driven records under upload/<year>/<date> with year sidebar navigation, diary rendering, repeated observation blocks, and fullscreen image viewing. Use when requests mention observation pages, Markdown-based observation logs, upload folder image integration, or replacing app/observations mock data with real content.
+description: Build and migrate the observations pages in this project from hardcoded data to Markdown-driven records under upload/observations/<year>/<date> with year sidebar navigation, diary rendering, repeated observation blocks, and fullscreen image viewing. Use when requests mention observation pages, Markdown-based observation logs, upload folder image integration, or replacing app/observations mock data with real content.
 ---
 
 # Observation Record Pages
 
-観測記録ページを `upload/<year>/<date>/index.md` 起点で実装し、既存の仮データ表示を差し替える。
+観測記録ページを `upload/observations/<year>/<date>/index.md` 起点で実装し、既存の仮データ表示を差し替える。
 
 ## 参照ファイル
 
@@ -17,7 +17,7 @@ description: Build and migrate the observations pages in this project from hardc
 ## 実装ルール
 
 - ルーティングは `app/observations/[year]/[date]` を維持し、静的年ディレクトリを増やさない。
-- データ配置は `upload/<year>/<date>/` 固定にする。
+- データ配置は `upload/observations/<year>/<date>/` 固定にする。
 - 年・日付はパスから決定し、frontmatter から取得しない。
 - 日記セクションは任意にし、未記載でもページを壊さない。
 - 観測記録セクションは必須にし、複数対象は見出しブロックを繰り返す。
@@ -35,7 +35,7 @@ description: Build and migrate the observations pages in this project from hardc
 
 1. `node_modules/next/dist/docs/` の関連ガイドを読み、現在の Next.js 仕様を確認する。
 2. `markdown-format.md` に沿って Markdown 入力仕様を固定する。
-3. `upload/<year>/<date>/index.md` を列挙するローダーを作る。
+3. `upload/observations/<year>/<date>/index.md` を列挙するローダーを作る。
 4. `generateStaticParams` で `[year]` と `[date]` を列挙し、SSG を基本方針にする。
 5. `app/observations/page.tsx` を実データの年一覧へ差し替える。
 6. `app/observations/[year]/layout.tsx` の sidebar データ源を `upload` 列挙へ差し替える。
@@ -47,7 +47,7 @@ description: Build and migrate the observations pages in this project from hardc
 ## 差し替え対象（現行コード基準）
 
 - `app/observations/page.tsx`: `observationYears` 仮配列を廃止し、ローダー結果へ置換する。
-- `app/observations/[year]/layout.tsx`: `app/observations/<year>` 走査を廃止し、`upload/<year>/<date>` 走査へ置換する。
+- `app/observations/[year]/layout.tsx`: `app/observations/<year>` 走査を廃止し、`upload/observations/<year>/<date>` 走査へ置換する。
 - `app/observations/[year]/[date]/page.tsx`: `records` ハードコードを廃止し、Markdown 解析結果へ置換する。
 - `app/observations/[year]/page.tsx`: 年ページの案内文は維持可能。必要なら件数サマリを追加する。
 
@@ -55,7 +55,7 @@ description: Build and migrate the observations pages in this project from hardc
 
 - Markdownパーサーの追加なしで処理可能なら、最初は依存追加しない。
 - 自前解析が複雑化する場合に限って `remark` などを検討し、承認後に導入する。
-- 画像の URL 解決は `/upload/<year>/<date>/<file>` を基本に統一する。
+- 画像の URL 解決は `/upload/observations/<year>/<date>/<file>` を基本に統一する。
 - フロント表示は「タイトル → 天体写真 → 撮影データ → 所感」の順を崩さない。
 - `所感` は段落改行（空行区切り）を維持して表示する。
 - モーダルの閉じる条件は「背景クリック」「Escキー」のみを基本にし、画像クリックでは閉じない。

@@ -4,7 +4,7 @@
 
 ## 1. ファイル配置
 
-- パスは `upload/<year>/<date>/index.md` 固定。
+- パスは `upload/observations/<year>/<date>/index.md` 固定。
 - 画像ファイルは `index.md` と同階層に置く。
 - `<year>` は4桁（例: `2024`）。
 - `<date>` は6桁 `YYMMDD`（例: `240410`）。

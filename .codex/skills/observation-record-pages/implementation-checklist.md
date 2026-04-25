@@ -8,11 +8,11 @@
 
 ## Phase 2: データ取得層
 
-- [ ] `upload/<year>/<date>/index.md` を列挙できる
+- [ ] `upload/observations/<year>/<date>/index.md` を列挙できる
 - [ ] 年と日付をパスから抽出している
 - [ ] 年別インデックスを生成できる
 - [ ] 詳細1件をロードする関数がある
-- [ ] 画像URLを `/upload/<year>/<date>/<file>` に解決できる
+- [ ] 画像URLを `/upload/observations/<year>/<date>/<file>` に解決できる
 - [ ] `## 観測記録` / `#### 所感` を行走査で抽出しており、終端正規表現依存がない
 - [ ] 見出し前後に空行が増えても、対象ブロック抽出が壊れない
 

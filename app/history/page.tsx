@@ -1,57 +1,16 @@
 import type { Metadata } from 'next';
+import { RichContentFlow } from '../_components/RichContentFlow';
+import { renderDecoratedLines } from '../_lib/inline-decorations';
+import { getHistoryEntries } from './_lib/history-data';
 
 export const metadata: Metadata = {
   title: 'History',
   description: '天体観測・天体写真活動の歴史をタイムライン形式で記録。',
 };
 
-const timelineItems = [
-  {
-    year:  '2023',
-    month: '10月',
-    title: '天体写真を始める',
-    desc:  'プレアデス星団を初めて撮影。双眼鏡と一眼レフカメラで天体撮影に入門。',
-    icon:  '🌟',
-  },
-  {
-    year:  '2023',
-    month: '12月',
-    title: '月面撮影',
-    desc:  '望遠鏡を使った月面撮影を行い、クレーターの詳細を記録。',
-    icon:  '🌕',
-  },
-  {
-    year:  '2024',
-    month: '08月',
-    title: '暗天サイトへの遠征',
-    desc:  '山間部へ初遠征。天の川の撮影に成功。星空の広大さを体感。',
-    icon:  '🏔️',
-  },
-  {
-    year:  '2024',
-    month: '10月',
-    title: '惑星観测（木星）',
-    desc:  '大赤斑・ガリレオ衛星を肉眼で確認。惑星観測の面白さに目覚める。',
-    icon:  '🪐',
-  },
-  {
-    year:  '2024',
-    month: '12月',
-    title: 'オリオン大星雲の撮影',
-    desc:  'コンポジット合成を初めて試行。星雲の色彩を初めて写し出せた。',
-    icon:  '✨',
-  },
-  {
-    year:  '2025',
-    month: '—',
-    title: '活動継続中',
-    desc:  '新しい機材や撮影技法を研究しながら観測を続けています。',
-    icon:  '🔭',
-    isCurrent: true,
-  },
-];
+export default async function HistoryPage() {
+  const timelineItems = await getHistoryEntries();
 
-export default function HistoryPage() {
   return (
     <div style={{ paddingTop: '100px', paddingBottom: '5rem', position: 'relative', zIndex: 1 }}>
       <div className="container-site" style={{ maxWidth: '760px' }}>
@@ -79,9 +38,9 @@ export default function HistoryPage() {
           />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {timelineItems.map(({ year, month, title, desc, icon, isCurrent }, i) => (
+            {timelineItems.map(({ year, monthLabel, title, summary, icon, isCurrent, content }, i) => (
               <div
-                key={`${year}-${month}`}
+                key={`${year}-${monthLabel}-${title}`}
                 style={{
                   display: 'flex',
                   gap: '1.5rem',
@@ -109,13 +68,13 @@ export default function HistoryPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.1rem',
-                      boxShadow: isCurrent
-                        ? '0 0 16px rgba(110, 168, 254, 0.5)'
-                        : 'none',
+                        fontSize: '1.1rem',
+                        boxShadow: isCurrent
+                          ? '0 0 16px rgba(110, 168, 254, 0.5)'
+                          : 'none',
                     }}
                   >
-                    {icon}
+                    {icon ?? '✦'}
                   </div>
                 </div>
 
@@ -130,7 +89,7 @@ export default function HistoryPage() {
                         letterSpacing: '0.1em',
                       }}
                     >
-                      {year} {month}
+                      {year} {monthLabel}
                     </span>
                     {isCurrent && (
                       <span
@@ -156,11 +115,16 @@ export default function HistoryPage() {
                       marginBottom: '0.5rem',
                     }}
                   >
-                    {title}
+                    {renderDecoratedLines(title)}
                   </h2>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.7 }}>
-                    {desc}
-                  </p>
+                  {summary ? (
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: content ? '1rem' : 0 }}>
+                      {renderDecoratedLines(summary)}
+                    </p>
+                  ) : null}
+                  {content && content.blocks.length + content.sideImages.length > 0 ? (
+                    <RichContentFlow flow={content} titleLevel="h3" />
+                  ) : null}
                 </div>
               </div>
             ))}

@@ -32,7 +32,7 @@
 
 ### 観測記録 project skill（計画）
 - [x] `requirements/260424 観測記録skills計画.md` 精査・配置先を `.codex/skills/` に更新（2026-04-24）
-- [x] 方針確定: 参照 `example.html`、複数対象はブロック繰り返し、`upload/<year>/<date>/` 固定、静的 `app/observations/2024/...` 削除、SSG 推奨を計画書に反映（2026-04-24）
+- [x] 方針確定: 参照 `example.html`、複数対象はブロック繰り返し、`upload/observations/<year>/<date>/` 固定、静的 `app/observations/2024/...` 削除、SSG 推奨を計画書に反映（2026-04-24）
 - [x] 日記/観測記録の見出しルールなど Markdown 本文仕様を `markdown-format.md` 案に落とし、同内容の `templates/observation-entry.md` を skill に同梱（2026-04-24）
 - [x] `.codex/skills/observation-record-pages/` に初版 SKILL 群を作成（2026-04-24）
 
@@ -74,6 +74,69 @@ _最終更新: 2026-04-24_
 
 ---
 
+## 🔧 進行中タスク（2026-04-25 Gallery ページの天体活動化）
+
+- [x] 現行 `gallery` / `observations` 実装と Next.js ルールの確認
+- [x] `Gallery` を左サイド日付 + 右本文の「天体活動」ページへ再設計
+- [x] `/gallery/[date]` の詳細表示と `/gallery` 既定表示を実装
+- [x] ヘッダー・トップなど主要導線の表記を同期
+- [x] lint で回帰確認
+
+_最終更新: 2026-04-25_
+
+---
+
+## 🔧 進行中タスク（2026-04-25 天体活動ページの Markdown 運用設計）
+
+- [x] `upload` ベース運用の可否を既存 observation 実装から確認
+- [x] activity 用 `index.md` の必要項目と表示要件を整理
+- [x] activity の Markdown ローダー実装方針を確定
+- [x] `gallery` を `upload/activities/<year>/<date>/index.md` ベースへ移行
+- [x] `2023/230816` の activity 記録を画面表示できることを確認
+- [x] activity 本文で段落単位の `align:` 指定を追加
+- [x] テンプレート / README に `align:` の書き方を反映
+- [x] activity 本文で `clear: both` による回り込み解除を追加
+- [x] テンプレート / README に `clear: both` の書き方を反映
+
+_最終更新: 2026-04-25_
+
+---
+
+## 🔧 進行中タスク（2026-04-25 activities/observations/history の本文記法統一）
+
+- [x] `activities` 本文パーサーの共通化ポイントを整理し、共通モジュールへ切り出す
+- [x] `observations` の `日記` / `所感` を共通本文ブロック描画へ移植する
+- [x] `history` を `upload/history/<year>/<date>/index.md` ベースへ移行する
+- [x] 共通記法のテンプレート / README を整備する
+- [x] build / lint で回帰確認する
+- [x] 必要な学びを `tasks/lessons.md` に記録する
+
+_最終更新: 2026-04-25_
+
+---
+
+## 🔧 進行中タスク（2026-04-25 upload README への共通記法タグ一覧追記）
+
+- [x] `upload` 配下 README / マニュアルの現状を確認
+- [x] 共通記法のタグ一覧を親 README と各 README に追記
+- [x] 用語の書き分けを揃えて運用しやすくする
+
+_最終更新: 2026-04-25_
+
+---
+
+## 🔧 進行中タスク（2026-04-25 upload 配下の observations / activities 整理）
+
+- [x] 既存 `upload` 構成と参照コードの確認
+- [x] 観測記録の配置先を `upload/observations/...` に統一
+- [x] `observations` 表示コードの参照先を新構成へ更新
+- [x] 運用文書と skill 前提を新構成に同期
+- [x] build / lint で回帰確認
+
+_最終更新: 2026-04-25_
+
+---
+
 ## 🔧 進行中タスク（2026-04-25 独自タグ反映の記法ゆれ修正）
 
 - [x] `upload` 内の独自タグ使用パターンを確認
@@ -87,7 +150,7 @@ _最終更新: 2026-04-25_
 
 ## 🔧 進行中タスク（2026-04-25 240207記録の再修正反映）
 
-- [x] `upload/2024/240207/index.md` の変更点に対する表示差分を特定
+- [x] `upload/observations/2024/240207/index.md` の変更点に対する表示差分を特定
 - [x] 観測詳細ページで `**太字**` と段落内改行の表示崩れを修正
 - [x] lint/build で回帰確認
 - [x] `tasks/lessons.md` へ必要分を追記
@@ -98,7 +161,7 @@ _最終更新: 2026-04-25_
 
 ## 🔧 進行中タスク（2026-04-25 240207観測記録の反映）
 
-- [x] `upload/2024/240207/index.md` の内容確認と欠損チェック
+- [x] `upload/observations/2024/240207/index.md` の内容確認と欠損チェック
 - [x] `app/observations` を upload ベースの一覧表示へ更新
 - [x] `2024/240207` が観測ページで表示されることを確認（静的ルート列挙・詳細描画ロジック反映まで）
 - [x] `tasks/lessons.md` に今回の学びを記録（必要分のみ）
