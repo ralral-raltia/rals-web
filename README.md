@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ral's 天体観測記録サイト
 
-## Getting Started
+天体観測の記録と写真を共有するための個人サイトです。
 
-First, run the development server:
+## 🌟 概要
+
+- **フレームワーク**: Next.js (App Router)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS + カスタムCSS変数
+- **特徴**: ガラス風UI、星の背景アニメーション
+
+## 🚀 開発環境のセットアップ
+
+### 依存関係のインストール
+
+```bash
+npm install
+```
+
+### 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いて確認できます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### ビルド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+### Lint
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 プロジェクト構成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+rals-web/
+├── app/                 # Next.js App Router ページ
+│   ├── about/          # 自己紹介ページ
+│   ├── gallery/        # ギャラリーページ
+│   ├── observations/   # 観測記録ページ（動的生成）
+│   └── ...
+├── components/         # Reactコンポーネント
+├── public/            # 静的ファイル（画像など）
+├── upload/            # 観測記録データ（Markdown）
+└── tasks/             # 開発タスク管理
+```
 
-## Deploy on Vercel
+## 📝 コンテンツの追加方法
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+コンテンツは `upload/` ディレクトリに整理されています。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+upload/
+├── activities/          # 活動記録
+│   ├── 2023/
+│   ├── 2024/
+│   └── README.md
+├── observations/        # 天体観測記録
+│   ├── 2024/
+│   │   └── 240207/
+│   │       └── index.md
+│   └── 観測記録アップロードマニュアル.md
+└── history/            # 歴史・タイムライン
+    ├── 2023/
+    ├── 2024/
+    ├── 2025/
+    └── README.md
+```
+
+### 各セクションの追加方法
+
+- **観測記録**: `upload/observations/観測記録アップロードマニュアル.md` を参照
+- **活動記録**: `upload/activities/activity-entry.md` をテンプレートとして使用
+- **歴史記録**: `upload/history/history-entry.md` をテンプレートとして使用
+
+## 🎨 デザインシステム
+
+- **カラーテーマ**: `app/globals.css` で定義されたCSS変数
+- **コンポーネント**: `className="glass-card"` でガラス風UI
+- **アニメーション**: 星の背景、山のパララックス効果
+
+## 🛠️ 開発メモ
+
+詳細な開発ルールや注意事項は `AGENTS.md` に記載されています。
+
+## 📄 ライセンス
+
+個人プロジェクトとして運営しています。
