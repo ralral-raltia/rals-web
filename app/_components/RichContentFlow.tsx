@@ -122,6 +122,19 @@ export function RichContentFlow({ flow, title, titleLevel = 'h3', titleStyle, te
       );
     }
 
+    if (block.type === 'line') {
+      return (
+        <div
+          key={key}
+          aria-hidden="true"
+          style={{
+            width: '100%',
+            borderTop: `${block.line.thickness}px ${block.line.style} rgba(150, 163, 184, 0.55)`,
+          }}
+        />
+      );
+    }
+
     return null;
   };
 

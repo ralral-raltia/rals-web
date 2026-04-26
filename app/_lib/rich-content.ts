@@ -3,6 +3,10 @@ import path from 'path';
 
 export type RichContentImageAlign = 'left' | 'right' | 'center';
 export type RichContentTextAlign = 'left' | 'center' | 'right';
+export type RichContentLine = {
+  thickness: number;
+  style: 'solid' | 'dotted';
+};
 
 export type RichContentSideImage = {
   alt: string;
@@ -19,6 +23,10 @@ export type RichContentBlock =
   | {
     type: 'clear';
     clear: 'both';
+  }
+  | {
+    type: 'line';
+    line: RichContentLine;
   }
   | {
     type: 'image';
@@ -157,6 +165,20 @@ function parseTextAlign(value: string | undefined): RichContentTextAlign {
   return 'left';
 }
 
+export function parseRichContentLine(value: string): RichContentLine | null {
+  const normalized = value.trim().toLowerCase();
+  const match = normalized.match(/^(\d+)?\s*(solid|dot|dotted)$/i);
+  if (!match) {
+    return null;
+  }
+
+  const thickness = Number.parseInt(match[1] ?? '1', 10);
+  return {
+    thickness: Number.isFinite(thickness) ? Math.min(Math.max(thickness, 1), 6) : 1,
+    style: match[2] === 'solid' ? 'solid' : 'dotted',
+  };
+}
+
 async function fileExists(filePath: string) {
   try {
     const stats = await fs.stat(filePath);
@@ -282,6 +304,20 @@ export async function parseRichContent({
         clear: 'both',
       });
       continue;
+    }
+
+    const lineMatch = trimmed.match(/^line\s*:\s*(.+)$/i);
+    if (lineMatch) {
+      const parsedLine = parseRichContentLine(lineMatch[1]);
+      if (parsedLine) {
+        flushTextBuffer();
+        commitPendingImage();
+        blocks.push({
+          type: 'line',
+          line: parsedLine,
+        });
+        continue;
+      }
     }
 
     commitPendingImage();

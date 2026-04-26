@@ -47,6 +47,8 @@ align: center
 
 ここだけ中央寄せしたい文章。
 
+line: 2solid
+
 clear: both
 
 ここから先は横いっぱいの本文に戻す。
@@ -55,6 +57,7 @@ clear: both
 - `image:` 画像ファイル名を指定
 - `imageAlign:` `left` / `right` / `center`
 - `align:` 段落の文字寄せを変更
+- `line:` `dot` / `2dot` / `solid` / `2solid` などで横線を差し込む
 - `clear: both` 以降の本文を全幅に戻す
 - 既存互換として `![alt](file.jpg)` 形式の単独行も中央画像として読める
 

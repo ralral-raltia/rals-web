@@ -20,6 +20,8 @@ align: center
 
 ここだけ中央寄せしたい補足文や印象的な一文を書く。
 
+line: 2dot
+
 align: left
 
 clear: both

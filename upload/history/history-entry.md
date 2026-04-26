@@ -15,6 +15,8 @@ align: center
 
 印象的な一文や、節目として見せたい短文を書く。
 
+line: 2solid
+
 align: left
 
 clear: both

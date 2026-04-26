@@ -4,6 +4,10 @@
 
 ```text
 upload/
+  about/
+    README.md
+    index.md
+    *.jpg
   observations/
     observation-entry.md
     観測記録アップロードマニュアル.md
@@ -30,17 +34,19 @@ upload/
 - 観測記録は `upload/observations/`
 - 天体活動は `upload/activities/`
 - 天文史は `upload/history/`
+- About 機材ページは `upload/about/index.md`
 - 画像は各 `index.md` と同じフォルダに置く
 
 ## 共通本文記法
 
-`activities` / `observations` / `history` の本文は、同じ記法で書ける。
+`about` / `activities` / `observations` / `history` の本文は、同じ記法で書ける。
 
 ### レイアウト系
 
 - `image: ファイル名` 同じフォルダの画像を本文に差し込む
 - `imageAlign: left|right|center` 画像の配置を指定する
 - `align: left|center|right` その後の段落の文字寄せを指定する
+- `line: dot|2dot|solid|2solid` 横線を差し込む。数字は太さ
 - `clear: both` 左右画像の回り込みを解除し、以降の本文を全幅に戻す
 - `![説明](ファイル名)` の単独行も、互換記法として中央画像で表示できる
 
