@@ -37,6 +37,8 @@ export type ObservationEntry = {
   weather?: string;
   tags: string[];
   diary?: RichContentFlow;
+  afterword?: RichContentFlow;
+  afterwordTitle?: string;
   targets: ObservationTarget[];
 };
 
@@ -237,6 +239,10 @@ export async function getObservationEntry(year: string, date: string): Promise<O
 
   const { frontmatter, body } = parseFrontmatter(rawMarkdown);
   const diaryRaw = extractSection(body, '日記');
+  const shootingAfterwordRaw = extractSection(body, '撮影後記');
+  const editingAfterwordRaw = extractSection(body, '編集後記');
+  const afterwordRaw = shootingAfterwordRaw || editingAfterwordRaw;
+  const afterwordTitle = editingAfterwordRaw ? '編集後記' : '撮影後記';
   const observations = extractObservationSection(body);
 
   const targets = await parseObservationTargets(year, date, observations || body);
@@ -263,6 +269,15 @@ export async function getObservationEntry(year: string, date: string): Promise<O
     })
     : undefined;
 
+  const afterword = afterwordRaw
+    ? await parseRichContent({
+      rawText: afterwordRaw,
+      mediaDir: path.join(uploadRootDir, year, date),
+      mediaUrlBase: `/upload/observations/${year}/${date}`,
+      defaultAlt: '撮影後記',
+    })
+    : undefined;
+
   return {
     year,
     date,
@@ -272,6 +287,8 @@ export async function getObservationEntry(year: string, date: string): Promise<O
     weather,
     tags,
     diary,
+    afterword,
+    afterwordTitle: afterword ? afterwordTitle : undefined,
     targets,
   };
 }

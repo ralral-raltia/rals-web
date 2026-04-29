@@ -4,6 +4,7 @@
 
 ```text
 upload/
+  <temporary screenshots/photos>
   about/
     README.md
     index.md
@@ -36,6 +37,7 @@ upload/
 - 天文史は `upload/history/`
 - About 機材ページは `upload/about/index.md`
 - 画像は各 `index.md` と同じフォルダに置く
+- 観測記録の移行前素材は一時的に `upload/` 直下へ置ける。`npm run prepare:observation` で元写真を保管フォルダへ移動し、スクリーンショットはユーザー側で削除する。
 
 ## 共通本文記法
 

@@ -31,6 +31,21 @@ description: Build and migrate the observations pages in this project from hardc
 - `upload` 配下の画像公開には `app/upload/[...segments]/route.ts` を使い、URLエンコード有無どちらでも解決できるようにする。
 - `observation-record-pages` 実行時は `tasks/todo.md` を原則更新しない（ユーザーが明示的に指示した場合のみ更新する）。
 
+## upload 直下からの自動登録ワークフロー
+
+ユーザーが既存サイトのスクリーンショットと天体写真の元 JPG を `upload/` 直下に置いた場合は、次の流れで観測ページを作成する。
+
+1. `upload/` 直下のファイルを確認し、スクリーンショットと元写真を識別する。
+   - スクリーンショットは移動・削除しない。ユーザー側で削除する前提。
+   - 元写真は最終的に `upload/observations/<year>/<date>/` へ移動してよい。
+2. スクリーンショットを読み取り、日記、使用機材、各対象のタイトル、撮影データ、所感、撮影後記を抽出する。
+3. 抽出内容を draft JSON に整理する。形式は `npm run prepare:observation -- --help` の `Draft JSON shape` を正とする。
+4. `npm run prepare:observation -- --draft <draft-json>` を実行し、元写真の移動と `index.md` 生成を行う。
+5. 生成された `upload/observations/<year>/<date>/index.md` を確認し、スクリーンショット由来の誤読や対象名を必要に応じて修正する。
+6. `npm run build` で `/observations/<year>/<date>` が SSG 対象になることを確認する。
+
+draft JSON を使わずに進める場合は、`npm run prepare:observation -- --date YYMMDD --target 対象名=写真.jpg` で写真移動と雛形生成だけ行い、その後 `index.md` を直接編集してよい。
+
 ## 実装フロー
 
 1. `node_modules/next/dist/docs/` の関連ガイドを読み、現在の Next.js 仕様を確認する。

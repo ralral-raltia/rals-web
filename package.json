@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare:observation": "node scripts/prepare-observation-record.mjs"
   },
   "dependencies": {
     "next": "16.2.2",

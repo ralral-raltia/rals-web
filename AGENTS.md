@@ -23,6 +23,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **共通レイアウト:** サイドバーなど、複数のページで共通するレイアウトは `layout.tsx` に実装する。
   - `layout.tsx` はサーバーコンポーネントなので、Node.jsの `fs` モジュールなどを直接利用して動的なコンテンツ（例: フォルダ一覧からナビゲーションを生成）を作成できる。
 
+### タスク記録の扱い (Task Notes)
+- **修正・新機能・新ページ作成:** 作業内容に応じて `tasks/todo.md` を用意・更新する。問題の原因や再発防止に有用な内容があれば `tasks/lessons.md` に記録する。
+- **コンテンツ登録:** 観測記録や天体活動など、既存の仕組みに沿って Markdown と画像を追加するだけの場合は、`tasks/todo.md` / `tasks/lessons.md` を準備・更新せずに実行する。
+
 ### 画像の扱い (Images)
 - **配置場所:** 静的な画像ファイルは `public/` ディレクトリ以下に配置する。
 - **表示方法:** `next/image` コンポーネントを使用して、最適化された画像表示を行う。

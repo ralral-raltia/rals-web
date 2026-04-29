@@ -191,6 +191,22 @@ export default async function ObservationDetailPage({ params }: Props) {
               )}
             </section>
           ))}
+
+          {record.afterword && (
+            <section className="glass-card" style={{ padding: '1.5rem' }}>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  letterSpacing: '0.1em',
+                  color: 'var(--color-star-purple)',
+                  marginBottom: '1rem',
+                }}
+              >
+                {record.afterwordTitle ?? '撮影後記'}
+              </h2>
+              <RichContentFlow flow={record.afterword} titleLevel="h3" />
+            </section>
+          )}
         </div>
 
         <div>
