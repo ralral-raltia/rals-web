@@ -120,6 +120,26 @@ h1, h2, h3, h4 {
   50%       { box-shadow: 0 0 28px rgba(110, 168, 254, 0.6); }
 }
 
+/* ヒーロー背景を漂うオーロラ状の光 */
+@keyframes aurora-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0.65; }
+  50%  { transform: translate3d(5%, -4%, 0) scale(1.18); opacity: 1; }
+  100% { transform: translate3d(-4%, 3%, 0) scale(1.05); opacity: 0.75; }
+}
+
+/* タイトル: ブラー + 字間が収束するエントランス */
+@keyframes title-in {
+  0%   { opacity: 0; letter-spacing: 0.2em; filter: blur(10px); }
+  100% { opacity: 1; letter-spacing: -0.03em; filter: blur(0); }
+}
+
+/* スクロールヒント: 上から伸びて消えるビーム */
+@keyframes scroll-beam {
+  0%   { transform: scaleY(0); opacity: 0.9; }
+  60%  { transform: scaleY(1); opacity: 0.9; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
 /* ============================================
    Utility Classes
    ============================================ */
@@ -142,6 +162,8 @@ h1, h2, h3, h4 {
 }
 
 .glass-card {
+  position: relative;
+  overflow: hidden;
   background: var(--gradient-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -150,11 +172,44 @@ h1, h2, h3, h4 {
   transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
+/* ホバー時に光る上端ヘアライン */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(110, 168, 254, 0.7), rgba(167, 139, 250, 0.7), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  pointer-events: none;
+}
+
+/* ホバー時に横切る光沢スイープ */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 55%;
+  background: linear-gradient(105deg, transparent 20%, rgba(240, 244, 255, 0.05) 45%, rgba(110, 168, 254, 0.1) 55%, transparent 80%);
+  transform: translateX(-180%) skewX(-18deg);
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
 .glass-card:hover {
   border-color: var(--color-border-glow);
-  box-shadow: 0 8px 32px rgba(110, 168, 254, 0.12);
-  transform: translateY(-3px);
+  box-shadow:
+    0 8px 32px rgba(110, 168, 254, 0.14),
+    inset 0 0 0 1px rgba(110, 168, 254, 0.08);
+  transform: translateY(-4px);
 }
+
+.glass-card:hover::before { opacity: 1; }
+.glass-card:hover::after  { transform: translateX(300%) skewX(-18deg); }
 
 .section-title {
   font-family: var(--font-display);
@@ -180,4 +235,29 @@ h1, h2, h3, h4 {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* セクション見出し上の小さなアイキャッチ文字 */
+.section-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--color-star-cyan);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

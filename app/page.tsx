@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import HeroMountainParallax from '@/components/HeroMountainParallax';
+import Reveal from '@/components/Reveal';
+import StarBackground from '@/components/StarBackground';
 
 export const metadata: Metadata = {
   title: "ral's website",
@@ -66,6 +68,43 @@ export default function HomePage() {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
 
+        {/* オーロラ状のアンビエント光 */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1,
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: '-25%',
+              left: '-15%',
+              width: '65vmax',
+              height: '65vmax',
+              background: 'radial-gradient(circle, rgba(110, 168, 254, 0.13), transparent 60%)',
+              filter: 'blur(48px)',
+              animation: 'aurora-drift 26s ease-in-out infinite alternate',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '-15%',
+              right: '-20%',
+              width: '55vmax',
+              height: '55vmax',
+              background: 'radial-gradient(circle, rgba(167, 139, 250, 0.11), transparent 60%)',
+              filter: 'blur(48px)',
+              animation: 'aurora-drift 32s ease-in-out -14s infinite alternate-reverse',
+            }}
+          />
+        </div>
+
         {/* グラデーションオーバーレイ */}
         <div
           style={{
@@ -84,6 +123,20 @@ export default function HomePage() {
             zIndex: 1,
           }}
         />
+
+        {/* 流星・またたきレイヤー（写真の手前・山の背後） */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 2,
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <StarBackground variant="hero" />
+        </div>
 
         {/* 前景の山シルエット */}
         <div
@@ -105,32 +158,56 @@ export default function HomePage() {
             padding: '0 1.5rem',
           }}
         >
-          <p
+          <div
             style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
-              color: 'var(--color-star-cyan)',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '1rem',
               marginBottom: '1rem',
               animation: 'fadeInUp 0.7s ease 0.1s both',
             }}
           >
-            Welcome to the cosmos
-          </p>
+            <span
+              aria-hidden
+              style={{
+                width: 'clamp(24px, 6vw, 56px)',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, var(--color-star-cyan))',
+              }}
+            />
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
+                color: 'var(--color-star-cyan)',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Welcome to the cosmos
+            </p>
+            <span
+              aria-hidden
+              style={{
+                width: 'clamp(24px, 6vw, 56px)',
+                height: '1px',
+                background: 'linear-gradient(90deg, var(--color-star-cyan), transparent)',
+              }}
+            />
+          </div>
           <h1
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2.8rem, 8vw, 6rem)',
               fontWeight: 700,
-              letterSpacing: '-0.03em',
               lineHeight: 1.05,
               marginBottom: '1.2rem',
               background: 'linear-gradient(135deg, #f0f4ff 0%, #a78bfa 60%, #6ea8fe 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              animation: 'fadeInUp 0.7s ease 0.25s both',
+              animation: 'title-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both',
             }}
           >
             ral&apos;s website
@@ -171,9 +248,10 @@ export default function HomePage() {
             <div
               style={{
                 width: '1px',
-                height: '40px',
-                background: 'linear-gradient(to bottom, var(--color-star-blue), transparent)',
-                animation: 'drift 1.5s ease-in-out infinite alternate',
+                height: '44px',
+                background: 'linear-gradient(to bottom, var(--color-star-cyan), var(--color-star-blue), transparent)',
+                transformOrigin: 'top',
+                animation: 'scroll-beam 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
               }}
             />
           </div>
@@ -189,10 +267,15 @@ export default function HomePage() {
         }}
       >
         <div className="container-site">
-          <h2 className="section-title" style={{ textAlign: 'center' }}>
-            Contents
-          </h2>
-          <div className="section-divider" style={{ margin: '0 auto 3rem' }} />
+          <Reveal>
+            <p className="section-eyebrow" style={{ textAlign: 'center' }}>
+              Explore
+            </p>
+            <h2 className="section-title" style={{ textAlign: 'center' }}>
+              Contents
+            </h2>
+            <div className="section-divider" style={{ margin: '0 auto 3rem' }} />
+          </Reveal>
 
           <div
             style={{
@@ -202,52 +285,56 @@ export default function HomePage() {
             }}
           >
             {navCards.map(({ href, icon, title, desc }, i) => (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  textDecoration: 'none',
-                  animation: `fadeInUp 0.6s ease ${i * 0.08}s both`,
-                }}
-              >
-                <div
-                  className="glass-card"
-                  style={{
-                    padding: '1.8rem 1.25rem',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                  }}
-                >
+              <Reveal key={href} delay={i * 0.08}>
+                <Link href={href} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
                   <div
+                    className="glass-card"
                     style={{
-                      fontSize: '2.2rem',
-                      marginBottom: '0.75rem',
-                      display: 'block',
+                      padding: '1.8rem 1.25rem',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      height: '100%',
                     }}
                   >
-                    {icon}
+                    <div
+                      style={{
+                        width: '64px',
+                        height: '64px',
+                        margin: '0 auto 0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.9rem',
+                        borderRadius: '50%',
+                        border: '1px solid var(--color-border)',
+                        background: 'radial-gradient(circle at 35% 30%, rgba(110, 168, 254, 0.12), rgba(5, 8, 16, 0.2))',
+                        boxShadow: 'inset 0 0 16px rgba(110, 168, 254, 0.08)',
+                      }}
+                    >
+                      {icon}
+                    </div>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        color: 'var(--color-star-blue)',
+                        marginBottom: '0.3rem',
+                      }}
+                    >
+                      {title}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: '0.8rem',
+                        color: 'var(--color-text-muted)',
+                      }}
+                    >
+                      {desc}
+                    </p>
                   </div>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      color: 'var(--color-star-blue)',
-                      marginBottom: '0.3rem',
-                    }}
-                  >
-                    {title}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: '0.8rem',
-                      color: 'var(--color-text-muted)',
-                    }}
-                  >
-                    {desc}
-                  </p>
-                </div>
-              </Link>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>

@@ -16,7 +16,6 @@ export default function Footer() {
   return (
     <footer
       style={{
-        borderTop: '1px solid var(--color-border)',
         background: 'rgba(5, 8, 16, 0.9)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
@@ -25,6 +24,21 @@ export default function Footer() {
         zIndex: 10,
       }}
     >
+      {/* 流れる光のヘアライン */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '1px',
+          background:
+            'linear-gradient(90deg, transparent, rgba(110, 168, 254, 0.55), rgba(167, 139, 250, 0.55), rgba(103, 232, 249, 0.45), transparent)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 7s linear infinite',
+        }}
+      />
       <div className="container-site">
         {/* Top row */}
         <div
@@ -72,18 +86,11 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
+                className="footer-link"
                 style={{
-                  color: 'var(--color-text-muted)',
                   fontSize: '0.875rem',
                   fontFamily: 'var(--font-display)',
                   textDecoration: 'none',
-                  transition: 'color var(--transition-base)',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-star-blue)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-muted)';
                 }}
               >
                 {label}
@@ -107,6 +114,17 @@ export default function Footer() {
           © {year} ral&apos;s website — All rights reserved.
         </p>
       </div>
+
+      <style>{`
+        .footer-link {
+          color: var(--color-text-muted);
+          transition: color var(--transition-base), text-shadow var(--transition-base);
+        }
+        .footer-link:hover {
+          color: var(--color-star-blue);
+          text-shadow: 0 0 12px rgba(110, 168, 254, 0.5);
+        }
+      `}</style>
     </footer>
   );
 }

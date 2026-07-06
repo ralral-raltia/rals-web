@@ -59,6 +59,7 @@ export default function Header() {
         {/* Logo */}
         <Link
           href="/"
+          className="logo-link"
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.25rem',
@@ -84,33 +85,18 @@ export default function Header() {
             <Link
               key={href}
               href={href}
+              className={`nav-link${isActive(href) ? ' nav-link-active' : ''}`}
               style={{
                 padding: '0.4rem 0.9rem',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '0.875rem',
                 fontFamily: 'var(--font-display)',
                 fontWeight: isActive(href) ? 600 : 400,
-                color: isActive(href)
-                  ? 'var(--color-star-blue)'
-                  : 'var(--color-text-muted)',
                 textDecoration: 'none',
-                transition: 'color var(--transition-base), background var(--transition-base)',
                 background: isActive(href)
-                  ? 'rgba(110, 168, 254, 0.1)'
+                  ? 'rgba(110, 168, 254, 0.08)'
                   : 'transparent',
                 position: 'relative',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive(href)) {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-primary)';
-                  (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive(href)) {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-muted)';
-                  (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                }
               }}
             >
               {label}
@@ -192,6 +178,42 @@ export default function Header() {
       </div>
 
       <style>{`
+        .nav-link {
+          color: var(--color-text-muted);
+          transition: color var(--transition-base), background var(--transition-base);
+        }
+        .nav-link:hover {
+          color: var(--color-text-primary);
+        }
+        .nav-link-active {
+          color: var(--color-star-blue);
+        }
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          left: 0.9rem;
+          right: 0.9rem;
+          bottom: 0.15rem;
+          height: 1px;
+          border-radius: 1px;
+          background: var(--gradient-accent);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .nav-link:hover::after {
+          transform: scaleX(1);
+        }
+        .nav-link-active::after {
+          transform: scaleX(1);
+          box-shadow: 0 0 8px rgba(110, 168, 254, 0.6);
+        }
+        .logo-link {
+          transition: filter var(--transition-slow);
+        }
+        .logo-link:hover {
+          filter: drop-shadow(0 0 10px rgba(110, 168, 254, 0.55));
+        }
         @media (max-width: 640px) {
           .desktop-nav { display: none !important; }
           .hamburger-btn { display: flex !important; }

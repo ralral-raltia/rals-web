@@ -2,53 +2,112 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+type RidgeStyle = {
+  color: string;
+  width: number;
+  glowColor: string;
+  glowWidth: number;
+};
+
 type MountainLayer = {
   id: string;
   baseYRatio: number;
   height: number;
   macroFreq: number;
-  midFreq: number;
   fineFreq: number;
+  sharpness: number;
+  fineAmp: number;
   parallaxX: number;
   parallaxY: number;
+  swayAmp: number;
+  swaySpeed: number;
   fill: string;
+  ridge: RidgeStyle;
 };
 
 type Point = { x: number; y: number };
 
+// 奥→手前の順。遠景ほど青く霞み、手前ほど暗く尖る（大気遠近法）
 const LAYERS: MountainLayer[] = [
   {
     id: 'far',
-    baseYRatio: 0.79,
-    height: 72,
-    macroFreq: 2.1,
-    midFreq: 5.8,
-    fineFreq: 13.5,
-    parallaxX: 9,
-    parallaxY: 10,
-    fill: 'url(#mountain-far)',
+    baseYRatio: 0.74,
+    height: 150,
+    macroFreq: 1.6,
+    fineFreq: 11,
+    sharpness: 2.2,
+    fineAmp: 0.1,
+    parallaxX: 7,
+    parallaxY: 6,
+    swayAmp: 1.4,
+    swaySpeed: 0.00005,
+    fill: 'url(#mtn-far)',
+    ridge: {
+      color: 'rgba(178, 200, 240, 0.2)',
+      width: 1,
+      glowColor: 'rgba(110, 168, 254, 0.08)',
+      glowWidth: 4,
+    },
+  },
+  {
+    id: 'midfar',
+    baseYRatio: 0.8,
+    height: 140,
+    macroFreq: 2.2,
+    fineFreq: 14,
+    sharpness: 2.7,
+    fineAmp: 0.13,
+    parallaxX: 15,
+    parallaxY: 11,
+    swayAmp: 1.8,
+    swaySpeed: 0.00006,
+    fill: 'url(#mtn-midfar)',
+    ridge: {
+      color: 'rgba(160, 190, 245, 0.24)',
+      width: 1,
+      glowColor: 'rgba(110, 168, 254, 0.1)',
+      glowWidth: 4,
+    },
   },
   {
     id: 'mid',
-    baseYRatio: 0.84,
-    height: 98,
-    macroFreq: 2.7,
-    midFreq: 7.4,
+    baseYRatio: 0.86,
+    height: 145,
+    macroFreq: 2.8,
     fineFreq: 17,
-    parallaxX: 25,
-    parallaxY: 20,
-    fill: 'url(#mountain-mid)',
+    sharpness: 3.1,
+    fineAmp: 0.16,
+    parallaxX: 27,
+    parallaxY: 18,
+    swayAmp: 2.2,
+    swaySpeed: 0.00007,
+    fill: 'url(#mtn-mid)',
+    ridge: {
+      color: 'rgba(140, 180, 250, 0.28)',
+      width: 1.2,
+      glowColor: 'rgba(110, 168, 254, 0.12)',
+      glowWidth: 5,
+    },
   },
   {
     id: 'front',
-    baseYRatio: 0.9,
-    height: 128,
-    macroFreq: 3.3,
-    midFreq: 8.5,
-    fineFreq: 20.5,
-    parallaxX: 40,
-    parallaxY: 30,
-    fill: 'url(#mountain-front)',
+    baseYRatio: 0.93,
+    height: 165,
+    macroFreq: 3.4,
+    fineFreq: 21,
+    sharpness: 3.5,
+    fineAmp: 0.2,
+    parallaxX: 42,
+    parallaxY: 28,
+    swayAmp: 2.6,
+    swaySpeed: 0.00008,
+    fill: 'url(#mtn-front)',
+    ridge: {
+      color: 'rgba(103, 232, 249, 0.4)',
+      width: 1.4,
+      glowColor: 'rgba(103, 232, 249, 0.14)',
+      glowWidth: 6,
+    },
   },
 ];
 
@@ -91,44 +150,61 @@ const fbm = (x: number, seed: number, octaves: number) => {
   return normalizer > 0 ? total / normalizer : 0;
 };
 
-const createLayerPath = (
+// リッジノイズ: 谷を折り返して尖った稜線を作る（岩山らしいシルエット）
+const ridgedFbm = (x: number, seed: number, octaves: number, sharpness: number) => {
+  let total = 0;
+  let amplitude = 0.55;
+  let frequency = 1;
+  let normalizer = 0;
+
+  for (let i = 0; i < octaves; i += 1) {
+    const n = valueNoise(x * frequency + seed * 11.7, seed + i * 17.3);
+    total += Math.pow(1 - Math.abs(2 * n - 1), sharpness) * amplitude;
+    normalizer += amplitude;
+    amplitude *= 0.48;
+    frequency *= 2.12;
+  }
+
+  return normalizer > 0 ? total / normalizer : 0;
+};
+
+const createLayerPaths = (
   width: number,
   height: number,
   layer: MountainLayer,
   seed: number,
 ) => {
-  const step = Math.max(8, Math.floor(width / 90));
+  const step = Math.max(5, Math.floor(width / 150));
   const points: Point[] = [];
   const baseY = height * layer.baseYRatio;
-  const minY = height * 0.5;
-  const maxY = height * 0.95;
+  const minY = height * 0.42;
+  const maxY = height * 0.98;
 
   for (let x = 0; x <= width + step; x += step) {
     const nx = x / width;
-    const macro = fbm(nx * layer.macroFreq, seed + 11, 3);
-    const mid = fbm(nx * layer.midFreq, seed + 29, 4);
-    const fine = fbm(nx * layer.fineFreq, seed + 53, 2);
+    const macro = ridgedFbm(nx * layer.macroFreq, seed + 11, 4, layer.sharpness);
+    const fine = fbm(nx * layer.fineFreq, seed + 53, 3);
 
-    const profile = (macro - 0.5) * 0.82 + (mid - 0.5) * 0.34 + (fine - 0.5) * 0.12;
+    const profile = (macro - 0.5) + (fine - 0.5) * layer.fineAmp;
     const y = clamp(baseY - profile * layer.height, minY, maxY);
 
     points.push({ x, y });
   }
 
   const [first] = points;
-  let path = `M 0 ${height} L ${first.x} ${first.y}`;
+  let ridgePath = `M ${first.x} ${first.y}`;
   for (let i = 1; i < points.length; i += 1) {
-    const p = points[i];
-    path += ` L ${p.x} ${p.y}`;
+    ridgePath += ` L ${points[i].x} ${points[i].y}`;
   }
-  path += ` L ${width} ${height} Z`;
 
-  return path;
+  const fillPath = `M 0 ${height} L ${ridgePath.slice(2)} L ${width} ${height} Z`;
+
+  return { fillPath, ridgePath };
 };
 
 export default function HeroMountainParallax() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const pathRefs = useRef<Record<string, SVGPathElement | null>>({});
+  const groupRefs = useRef<Record<string, SVGGElement | null>>({});
   const [size, setSize] = useState({ width: 1200, height: 800 });
   const [canUseMouse, setCanUseMouse] = useState(false);
 
@@ -138,7 +214,7 @@ export default function HeroMountainParallax() {
   const layers = useMemo(() => {
     return LAYERS.map((layer, index) => ({
       ...layer,
-      d: createLayerPath(size.width, size.height, layer, 100 + index * 37),
+      ...createLayerPaths(size.width, size.height, layer, 100 + index * 37),
     }));
   }, [size.height, size.width]);
 
@@ -171,19 +247,24 @@ export default function HeroMountainParallax() {
   }, []);
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     let rafId = 0;
 
-    const animate = () => {
+    const animate = (time: number) => {
       pointer.current.x = lerp(pointer.current.x, target.current.x, LERP);
       pointer.current.y = lerp(pointer.current.y, target.current.y, LERP);
 
-      for (const layer of LAYERS) {
-        const element = pathRefs.current[layer.id];
-        if (!element) continue;
-        const tx = pointer.current.x * layer.parallaxX;
-        const ty = pointer.current.y * layer.parallaxY;
-        element.setAttribute('transform', `translate(${tx} ${ty})`);
-      }
+      LAYERS.forEach((layer, index) => {
+        const element = groupRefs.current[layer.id];
+        if (!element) return;
+        // マウスパララックス + 常時ゆっくり漂うアンビエントスウェイ
+        const swayX = Math.sin(time * layer.swaySpeed + index * 1.7) * layer.swayAmp;
+        const swayY = Math.cos(time * layer.swaySpeed * 0.8 + index * 2.3) * layer.swayAmp * 0.45;
+        const tx = pointer.current.x * layer.parallaxX + swayX;
+        const ty = pointer.current.y * layer.parallaxY + swayY;
+        element.setAttribute('transform', `translate(${tx.toFixed(2)} ${ty.toFixed(2)})`);
+      });
 
       rafId = window.requestAnimationFrame(animate);
     };
@@ -242,29 +323,67 @@ export default function HeroMountainParallax() {
         }}
       >
         <defs>
-          <linearGradient id="mountain-far" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(34, 51, 80, 0.46)" />
-            <stop offset="100%" stopColor="rgba(15, 24, 42, 0.62)" />
+          <linearGradient id="mtn-far" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(90, 124, 178, 0.4)" />
+            <stop offset="100%" stopColor="rgba(36, 54, 88, 0.55)" />
           </linearGradient>
-          <linearGradient id="mountain-mid" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(26, 38, 62, 0.68)" />
-            <stop offset="100%" stopColor="rgba(11, 19, 33, 0.8)" />
+          <linearGradient id="mtn-midfar" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(56, 80, 122, 0.62)" />
+            <stop offset="100%" stopColor="rgba(24, 36, 60, 0.78)" />
           </linearGradient>
-          <linearGradient id="mountain-front" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(14, 20, 33, 0.85)" />
-            <stop offset="100%" stopColor="rgba(6, 10, 16, 0.96)" />
+          <linearGradient id="mtn-mid" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(30, 44, 72, 0.82)" />
+            <stop offset="100%" stopColor="rgba(13, 21, 37, 0.92)" />
+          </linearGradient>
+          <linearGradient id="mtn-front" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(12, 18, 30, 0.97)" />
+            <stop offset="100%" stopColor="rgba(4, 7, 13, 1)" />
+          </linearGradient>
+          {/* 山あいに漂う霞 */}
+          <linearGradient id="mtn-haze" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(110, 168, 254, 0)" />
+            <stop offset="55%" stopColor="rgba(124, 158, 220, 0.1)" />
+            <stop offset="100%" stopColor="rgba(60, 90, 140, 0.02)" />
           </linearGradient>
         </defs>
 
-        {layers.map((layer) => (
-          <path
-            key={layer.id}
-            ref={(node) => {
-              pathRefs.current[layer.id] = node;
-            }}
-            d={layer.d}
-            fill={layer.fill}
-          />
+        {layers.map((layer, index) => (
+          <g key={layer.id}>
+            {index > 0 && (
+              <rect
+                x="0"
+                y={size.height * (LAYERS[index - 1].baseYRatio - 0.05)}
+                width={size.width}
+                height={size.height * 0.16}
+                fill="url(#mtn-haze)"
+                opacity={1 - index * 0.22}
+              />
+            )}
+            <g
+              ref={(node) => {
+                groupRefs.current[layer.id] = node;
+              }}
+            >
+              <path d={layer.fillPath} fill={layer.fill} />
+              {/* 稜線のリムライト（月明かり + 近未来アクセント） */}
+              <path
+                d={layer.ridgePath}
+                fill="none"
+                stroke={layer.ridge.glowColor}
+                strokeWidth={layer.ridge.glowWidth}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+              <path
+                d={layer.ridgePath}
+                fill="none"
+                stroke={layer.ridge.color}
+                strokeWidth={layer.ridge.width}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+            </g>
+          </g>
         ))}
       </svg>
     </div>
